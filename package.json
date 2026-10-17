@@ -1,0 +1,209 @@
+{
+  "name": "xot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "app:dev": "npm run build && electron .",
+    "app:build": "npm run build && electron-builder --mac && codesign --force --deep --sign - release/mac-arm64/Xot.app",
+    "app:install": "npm run app:build && rm -rf /Applications/Xot.app && ditto release/mac-arm64/Xot.app /Applications/Xot.app && /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f /Applications/Xot.app",
+    "app:dmg": "npm run build && electron-builder --mac dmg --universal -c.mac.identity=- -c.mac.hardenedRuntime=false",
+    "app:dmg:arm64": "npm run build && electron-builder --mac dmg --arm64 -c.mac.identity=- -c.mac.hardenedRuntime=false",
+    "app:dmg:x64": "npm run build && electron-builder --mac dmg --x64 -c.mac.identity=- -c.mac.hardenedRuntime=false"
+  },
+  "devDependencies": {
+    "@blocknote/code-block": "^0.56.0",
+    "@blocknote/core": "^0.56.0",
+    "@blocknote/mantine": "^0.56.0",
+    "@blocknote/react": "^0.56.0",
+    "@blocknote/xl-multi-column": "^0.56.0",
+    "@emoji-mart/data": "^1.2.1",
+    "@mantine/core": "^9.7.2",
+    "@mantine/hooks": "^9.7.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "dexie": "^4.4.6",
+    "dexie-react-hooks": "^4.4.0",
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3",
+    "katex": "^0.16.45",
+    "lucide-react": "^1.57.0",
+    "mermaid": "11.17.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "~5.9",
+    "vite": "^8.3.4"
+  },
+  "description": "Páginas, bases de datos y automatizaciones guardadas en tu equipo.",
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "com.rotzebra.xot",
+    "productName": "Xot",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "artifactName": "Xot-${version}-${arch}.${ext}",
+      "icon": "build/icon.icon",
+      "identity": null,
+      "extendInfo": {
+        "CFBundleDevelopmentRegion": "es",
+        "NSCameraUsageDescription": "Xot no usa la cámara.",
+        "NSMicrophoneUsageDescription": "Xot no usa el micrófono.",
+        "NSAudioCaptureUsageDescription": "Xot no graba audio.",
+        "NSBluetoothAlwaysUsageDescription": "Xot no usa Bluetooth.",
+        "NSBluetoothPeripheralUsageDescription": "Xot no usa Bluetooth.",
+        "CFBundleDocumentTypes": [
+          {
+            "CFBundleTypeName": "Folder",
+            "CFBundleTypeRole": "Viewer",
+            "LSHandlerRank": "Alternate",
+            "LSItemContentTypes": [
+              "public.folder"
+            ]
+          }
+        ]
+      }
+    },
+    "dmg": {
+      "title": "Xot ${version}",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 140,
+          "y": 190
+        },
+        {
+          "x": 400,
+          "y": 190,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "protocols": [
+      {
+        "name": "Xot",
+        "schemes": [
+          "xot"
+        ]
+      }
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "md",
+          "markdown",
+          "mdown",
+          "mkdn",
+          "mkd",
+          "rmd"
+        ],
+        "name": "Markdown Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "csv",
+          "tsv"
+        ],
+        "name": "CSV Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "html",
+          "htm"
+        ],
+        "name": "HTML Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "txt"
+        ],
+        "name": "Plain Text",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "zip"
+        ],
+        "name": "ZIP Archive",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "docx"
+        ],
+        "name": "Word Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "xlsx",
+          "ods"
+        ],
+        "name": "Spreadsheet",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "pdf"
+        ],
+        "name": "PDF Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "epub"
+        ],
+        "name": "EPUB Book",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "opml"
+        ],
+        "name": "OPML Outline",
+        "role": "Viewer",
+        "rank": "Alternate"
+      }
+    ]
+  },
+  "author": "Rotzebra",
+  "license": "GPL-3.0-or-later",
+  "repository": "github:Rotzebra/xot"
+}
